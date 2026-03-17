@@ -5,6 +5,8 @@ from langchain_text_splitters import CharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
+from tqdm import tqdm  # ✅ ADDED (progress bar)
+
 load_dotenv()
 CLASS_SUBJECT_NAME = os.getenv('CLASS_SUBJECT_NAME')
 DEVICE = os.getenv('DEVICE', 'cpu')  # Default to 'cpu' if not set
@@ -25,6 +27,7 @@ def vectorize_book_and_store_to_db(class_subject_name, vector_db_name):
     loader = DirectoryLoader(path=book_dir, glob="./*.pdf", loader_cls=UnstructuredFileLoader)
     documents = loader.load()
     text_chunks = text_splitter.split_documents(documents)
+    print(f"[INFO] Splitting done: {len(text_chunks)} chunks will be stored")  # ✅ ADDED
     Chroma.from_documents(documents=text_chunks, embedding=embedding, persist_directory=vector_db_path)
     print(f"{class_subject_name} saved to vector db: {vector_db_name}")
     return 0
@@ -40,6 +43,7 @@ def vectorize_chapters(class_subject_name):
         loader = UnstructuredFileLoader(chapter_pdf_path)
         documents = loader.load()
         texts = text_splitter.split_documents(documents)
+        print(f"[INFO] {chapter_name}: {len(texts)} chunks will be stored")  # ✅ ADDED (same idea reused)
         Chroma.from_documents(documents=texts, embedding=embedding, persist_directory=f"{chapters_vector_db_dir}/{chapter_name}")
         print(f"{chapter_name} chapter vectorized")
     return 0

@@ -45,7 +45,7 @@ def setup_chain(selected_chapter, selected_subject):
 
 
 st.set_page_config(
-    page_title="StudyPal",
+    page_title="EasyStudy",
     page_icon="🌀",
     layout="centered"
 )
